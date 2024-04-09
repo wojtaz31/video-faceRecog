@@ -8,11 +8,12 @@ cap.set(cv2.CAP_PROP_FRAME_WIDTH,320)
 match = False
 
 ref_img = cv2.imread('ref.jpg')
-def main():
+
+def startLiveCapture(freq = 30):
     counter = 0
     while True:
         ret, frame = cap.read()
-        if counter % 30 == 0:
+        if counter % freq == 0:
             if not ret:
                 continue
 
@@ -31,4 +32,4 @@ def main():
     cap.release()
     cv2.destroyAllWindows()
 
-main()
+startLiveCapture(120)
