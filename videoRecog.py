@@ -24,10 +24,13 @@ def videoRecog(reference_path, videoPath=''):
             break
 
         if frame_number % 15 == 0:
-            find_match(frame.copy(), ref_img, frame_number)
+          find_match(frame.copy(), ref_img, frame_number)
 
-    print("Frames:")
-    print(video_matches_timestamps)
+    for timestamp in video_matches_timestamps:
+        seconds = timestamp // 30
+        minutes = seconds // 60
+        seconds = seconds - 60 * minutes
+        print(f"{minutes} minutes {seconds} seconds")
     cap.release()
 
 videoRecog('/reference.jpg', '/video-test.mp4')
