@@ -3,12 +3,23 @@ from deepface import DeepFace
 
 video_matches_frames = []
 
+
 def find_match(frame, ref_img, frame_number):
     try:
         if DeepFace.verify(frame, ref_img.copy(), enforce_detection=False)['verified']:
             video_matches_frames.append(frame_number)
     except ValueError:
         pass
+
+
+def framesToTimestamps(frames):
+    timestamps = []
+    for frame_nr in frames:
+        seconds = frame_nr // 30
+        minutes = seconds // 60
+        seconds = seconds - 60 * minutes
+        timestamps.append(f"{minutes}:{seconds}")
+    return timestamps
 
 
 def videoRecog(reference_path, videoPath=''):
@@ -26,11 +37,8 @@ def videoRecog(reference_path, videoPath=''):
         if frame_number % 15 == 0:
             find_match(frame.copy(), ref_img, frame_number)
 
-    for frame_nr in video_matches_frames:
-        seconds = frame_nr // 30
-        minutes = seconds // 60 
-        seconds = seconds - 60 * minutes 
-        print(f"{minutes} minutes {seconds} seconds")
+    print(framesToTimestamps(video_matches_frames))
     cap.release()
+
 
 videoRecog('/reference.jpg', '/video-test.mp4')
