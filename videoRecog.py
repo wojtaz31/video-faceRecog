@@ -18,6 +18,8 @@ def framesToTimestamps(frames):
         seconds = frame_nr // 30
         minutes = seconds // 60
         seconds = seconds - 60 * minutes
+        if minutes < 10: minutes = '0' + str(minutes)
+        if seconds < 10: seconds = '0' + str(seconds)
         timestamps.append(f"{minutes}:{seconds}")
     return timestamps
 
