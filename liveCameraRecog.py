@@ -1,4 +1,5 @@
 import cv2
+import threading
 from deepface import DeepFace
 
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
@@ -9,6 +10,16 @@ match = False
 
 ref_img = cv2.imread('ref.jpg')
 
+def find_match(frame):
+    global match
+    try:
+        if DeepFace.verify(frame, ref_img.copy(), enforce_detection=False)['verified']:
+            match = True
+            print(match)
+        else:
+            match = False
+    except ValueError:
+        pass
 def startLiveCapture(freq = 30):
     counter = 0
     while True:
@@ -17,7 +28,12 @@ def startLiveCapture(freq = 30):
             if not ret:
                 continue
 
-            if DeepFace.verify(frame, ref_img.copy(), enforce_detection=False)['verified']:
+            try:
+                threading.Thread(target=find_match, args=(frame.copy(),)).start()
+            except ValueError:
+                pass
+
+            if match:
                 label = 'MATCH DETECTED'
                 color = (0, 255, 0)
             else:
