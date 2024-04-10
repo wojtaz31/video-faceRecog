@@ -8,20 +8,19 @@ cap.set(cv2.CAP_PROP_FRAME_WIDTH,320)
 
 match = False
 
-ref_img = cv2.imread('ref.jpg')
-
-def find_match(frame):
+def find_match(frame, ref_img):
     global match
     try:
         if DeepFace.verify(frame, ref_img.copy(), enforce_detection=False)['verified']:
             match = True
-            print(match)
         else:
             match = False
     except ValueError:
         pass
-def startLiveCapture(freq = 30):
+
+def startLiveCapture(reference_path ,freq = 30):
     counter = 0
+    ref_img = cv2.imread(reference_path)
     while True:
         ret, frame = cap.read()
         if counter % freq == 0:
@@ -29,7 +28,7 @@ def startLiveCapture(freq = 30):
                 continue
 
             try:
-                threading.Thread(target=find_match, args=(frame.copy(),)).start()
+                threading.Thread(target=find_match, args=(frame.copy(), ref_img)).start()
             except ValueError:
                 pass
 
@@ -49,4 +48,4 @@ def startLiveCapture(freq = 30):
     cap.release()
     cv2.destroyAllWindows()
 
-startLiveCapture(120)
+startLiveCapture('ref.jpg', 120)
