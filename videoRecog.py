@@ -1,12 +1,12 @@
 import cv2
 from deepface import DeepFace
 
-video_matches_timestamps = []
+video_matches_frames = []
 
 def find_match(frame, ref_img, frame_number):
     try:
         if DeepFace.verify(frame, ref_img.copy(), enforce_detection=False)['verified']:
-            video_matches_timestamps.append((frame_number))
+            video_matches_frames.append(frame_number)
     except ValueError:
         pass
 
@@ -24,12 +24,12 @@ def videoRecog(reference_path, videoPath=''):
             break
 
         if frame_number % 15 == 0:
-          find_match(frame.copy(), ref_img, frame_number)
+            find_match(frame.copy(), ref_img, frame_number)
 
-    for timestamp in video_matches_timestamps:
-        seconds = timestamp // 30
-        minutes = seconds // 60
-        seconds = seconds - 60 * minutes
+    for frame_nr in video_matches_frames:
+        seconds = frame_nr // 30
+        minutes = seconds // 60 
+        seconds = seconds - 60 * minutes 
         print(f"{minutes} minutes {seconds} seconds")
     cap.release()
 
