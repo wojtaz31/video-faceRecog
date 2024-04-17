@@ -21,6 +21,7 @@ def framesToTimestamps(frames):
         if minutes < 10: minutes = '0' + str(minutes)
         if seconds < 10: seconds = '0' + str(seconds)
         timestamps.append(f"{minutes}:{seconds}")
+    timestamps = list(dict.fromkeys(timestamps))
     return timestamps
 
 
