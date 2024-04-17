@@ -12,7 +12,7 @@ def find_match(frame, ref_img, frame_number):
         pass
 
 
-def framesToTimestamps(frames):
+def framesToTimestamps(frames, detectIntervals=False):
     timestamps = []
     for frame_nr in frames:
         seconds = frame_nr // 30
@@ -22,6 +22,24 @@ def framesToTimestamps(frames):
         if seconds < 10: seconds = '0' + str(seconds)
         timestamps.append(f"{minutes}:{seconds}")
     timestamps = list(dict.fromkeys(timestamps))
+
+    if detectIntervals:
+        intervalTimestamps = []
+        e = prev = ''
+        for i in timestamps:
+            if e == '':
+                e += i + ' -'
+                prev = i
+                continue
+            if not (int(prev[-2::]) == int(i[-2::]) - 1 or (prev[-2::] == '59' and i[-2::] == '00')):
+                e += ' ' + prev
+                intervalTimestamps.append(e)
+                e = ''
+            prev = i
+        if e[-1] == '-':
+            e += ' ' + timestamps[-1]
+            intervalTimestamps.append(e)
+        return intervalTimestamps
     return timestamps
 
 
@@ -40,7 +58,7 @@ def videoRecog(reference_path, videoPath=''):
         if frame_number % 15 == 0:
             find_match(frame.copy(), ref_img, frame_number)
 
-    print(framesToTimestamps(video_matches_frames))
+    print(framesToTimestamps(video_matches_frames), '\n', framesToTimestamps(video_matches_frames, True))
     cap.release()
 
 
