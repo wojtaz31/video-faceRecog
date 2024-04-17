@@ -3,7 +3,6 @@ from deepface import DeepFace
 
 video_matches_frames = []
 
-
 def find_match(frame, ref_img, frame_number):
     try:
         if DeepFace.verify(frame, ref_img.copy(), enforce_detection=False)['verified']:
@@ -57,9 +56,11 @@ def videoRecog(reference_path, videoPath=''):
 
         if frame_number % 15 == 0:
             find_match(frame.copy(), ref_img, frame_number)
-
-    print(framesToTimestamps(video_matches_frames), '\n', framesToTimestamps(video_matches_frames, True))
-    print(f'Twarz znajduje się w filmie przez {len(video_matches_frames)} sekund')
+    
+    timestamps = framesToTimestamps(video_matches_frames)
+    intervalTimestamps = framesToTimestamps(video_matches_frames, True)
+    print(timestamps, '\n', intervalTimestamps)
+    print(f'Twarz znajduje się w filmie przez {len(timestamps)} sekund')
     cap.release()
 
 videoRecog('/reference.jpg', '/video-test.mp4')
