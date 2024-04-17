@@ -59,7 +59,7 @@ def videoRecog(reference_path, videoPath=''):
             find_match(frame.copy(), ref_img, frame_number)
 
     print(framesToTimestamps(video_matches_frames), '\n', framesToTimestamps(video_matches_frames, True))
+    print(f'Twarz znajduje się w filmie przez {len(video_matches_frames)} sekund')
     cap.release()
-
 
 videoRecog('/reference.jpg', '/video-test.mp4')
